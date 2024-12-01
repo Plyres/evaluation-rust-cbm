@@ -1,6 +1,6 @@
 pub(crate) trait Cache{
-    fn insert_into_cache(&mut self, _key: String, _value: String);
+    fn insert_into_cache(&mut self, key: String, value: String);
 
-    fn get_cache_content(&mut self, _key: String);
+    fn get_cache_content(&mut self, key: String) -> Option<&String>;
 
 }
