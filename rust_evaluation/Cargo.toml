@@ -1,5 +1,5 @@
 [package]
-name = "eval_cbm"
+name = "rust_evaluation_cbm"
 version = "0.1.0"
 edition = "2021"
 

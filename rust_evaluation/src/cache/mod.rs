@@ -1,2 +1,2 @@
-mod my_lru_cache;
-mod cache_trait;
+pub mod my_lru_cache;
+pub mod cache_trait;
