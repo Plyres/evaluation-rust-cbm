@@ -10,9 +10,9 @@ pub struct MyLruCache<K, V> {
 }
 
 impl<K: Clone + Eq + Hash, V> MyLruCache<K, V> {
-    /// Creates a new instance of LRU Cache
+    /// Crée une nouvelle instance de cache LRU
     /// # Arguments
-    /// - `cache_capacity`: The size of the cache
+    /// - `cache_capacity`: La taille du cache
     /// # Examples
     ///
     /// ```
@@ -29,7 +29,7 @@ impl<K: Clone + Eq + Hash, V> MyLruCache<K, V> {
         }
     }
 
-    /// Returns the number of elements in the cache
+    /// Retourne le nombre d'éléments présent dans le cache
     pub fn len(&self) -> usize {
         self.cache_content.len()
     }
@@ -51,8 +51,11 @@ impl<K, V> Cache<K, V> for MyLruCache<K, V>
     /// use rust_evaluation_cbm::cache::my_lru_cache::MyLruCache;
     ///
     /// let mut cache = MyLruCache::new(3);
-    /// cache.insert_into_cache("key1".to_string(), 1);
-    /// assert_eq!(cache.len(), 1);
+    /// cache.insert_into_cache(String::from("key1"), 1);
+    /// cache.insert_into_cache(String::from("key2"), 2);
+    /// cache.insert_into_cache(String::from("key3"), 3);
+    /// cache.insert_into_cache(String::from("key4"), 4);
+    /// assert_eq!(cache.len(), 3);
     /// ```
     fn insert_into_cache(&mut self, key: K, value: V) {
         // Première condition qui vérifie si la clé passée en paramètre est déjà dans le cache
@@ -68,8 +71,9 @@ impl<K, V> Cache<K, V> for MyLruCache<K, V>
             }
         }
 
-        // J'insère la nouvelle paire clé-valeur et met à jour l'ordre
+        // J'insère la nouvelle paire clé-valeur
         self.cache_content.insert(key.clone(), value);
+        // Je mets à jour l'ordre
         self.key_order.insert(0, key);
     }
 
@@ -83,13 +87,14 @@ impl<K, V> Cache<K, V> for MyLruCache<K, V>
     /// use rust_evaluation_cbm::cache::cache_trait::Cache;
     /// use rust_evaluation_cbm::cache::my_lru_cache::MyLruCache;
     ///
-    /// let mut cache = MyLruCache::new(1);
-    /// cache.insert_into_cache(1, "key1".to_string());
-    /// assert_eq!(cache.get_cache_content(&1), Some(&"key1".to_string()));
+    /// let mut cache = MyLruCache::new(3);
+    /// cache.cache_content.insert(1,String::from("key1"));
+    /// cache.key_order.push(1);
+    /// assert_eq!(cache.get_cache_content(&1), Some(&String::from("key1")));
     /// ```
     fn get_cache_content(&mut self, key: &K) -> Option<&V> {
         if let Some(index) = self.key_order.iter().position(|k| k == key) {
-            // Move the accessed key to the front of the order list
+            // Supprime la clé pour la réinsérer en tête du vecteur car elle est maintenant la plus récente
             let k = self.key_order.remove(index);
             self.key_order.insert(0, k);
             self.cache_content.get(key)
